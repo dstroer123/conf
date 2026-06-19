@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Автор и книги</title>
+</head>
+<body>
+
+<h1>Добавление автора и книг</h1>
+
+<form method="post">
+
+    {% csrf_token %}
+
+    <p>
+        <label>Имя автора:</label>
+        <input type="text" name="name">
+    </p>
+
+    {{ formset.management_form }}
+
+    {% for form in formset %}
+        {{ form.as_p }}
+        <hr>
+    {% endfor %}
+
+    <button type="submit">
+        Сохранить
+    </button>
+
+</form>
+
+</body>
+</html>
