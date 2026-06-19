@@ -1,29 +1,40 @@
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-
-from .models import Author
-from .forms import BookFormSet
+from django.http import HttpResponse
 
 
-def create_author(request):
-    author = Author()
+def login_view(request):
 
     if request.method == 'POST':
-        author.name = request.POST.get('name')
 
-        formset = BookFormSet(request.POST, instance=author)
+        username = request.POST['username']
+        password = request.POST['password']
 
-        if author.name and formset.is_valid():
-            author.save()
-            formset.instance = author
-            formset.save()
+        user = authenticate(
+            request,
+            username=username,
+            password=password
+        )
+
+        if user is not None:
+
+            login(request, user)
+
+            print("Пользователь вошел:")
+            print("Username:", user.username)
+            print("Email:", user.email)
+            print("Is staff:", user.is_staff)
+            print("Is superuser:", user.is_superuser)
 
             return redirect('/')
 
-    else:
-        formset = BookFormSet(instance=author)
+    return render(request, 'library/login.html')
 
-    return render(
-        request,
-        'library/index.html',
-        {'formset': formset}
-    )
+
+def create_author(request):
+    return HttpResponse("Главная страница")
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('/login/')
